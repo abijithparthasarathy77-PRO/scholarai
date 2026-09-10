@@ -31,21 +31,21 @@ export function generateAdvisorResponse(
 
 Based on multi-dimensional eligibility and deadline proximity:
 
-1. **Tata Merit Endowment for Higher Education (₹1,00,000 / year)**
+1. **Tata Trusts Individual Grants for Undergraduate Studies (₹1,00,000 / year)**
    - **Urgency**: 🔴 Critical — Closes in less than 48 hours.
    - **Readiness**: 95% complete in your 'Ready to Apply' queue.
-   - **Match Score**: 95% Strong Match (Your 86.4% exceeds the 80% cutoff).
+   - **Match Score**: 96% Strong Match (Your 86.4% exceeds the 75% cutoff).
    - **Action Needed**: Upload the updated Tahsildar Income Certificate renewal receipt before final submission.
 
-2. **National Merit Commerce & Management Scholarship 2026 (₹75,000 / year)**
-   - **Urgency**: 🟡 Closes in 6 days.
-   - **Match Score**: 92% Strong Match. Full B.Com discipline alignment.
+2. **Central Sector Scheme of Scholarship (PM-USP CSSS) (₹20,000 / year)**
+   - **Urgency**: 🟡 Closes in 6 days on National Scholarship Portal (NSP).
+   - **Match Score**: 98% Strong Match. Full Commerce honors alignment and >80th percentile.
 
-3. **Maharashtra State Post-Matric EWS Freeship Scheme (₹40,000 / year)**
+3. **Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti Yojna (MahaDBT) (₹48,000 / year)**
    - **Status**: Already submitted! Under college nodal scrutiny.`,
       actionLinks: [
         { label: 'View Application Pipeline', url: '/applications' },
-        { label: 'Inspect Tata Endowment Details', url: '/scholarships/sch_tata_merit_endowment' },
+        { label: 'Inspect Tata Trusts Grant Details', url: '/scholarships/sch_tata_merit_endowment' },
       ],
     };
   }
@@ -58,7 +58,7 @@ Based on multi-dimensional eligibility and deadline proximity:
       timestamp,
       content: `### 🔍 Transparent Exclusion Breakdown
 
-ScholarAI uses explicit, non-black-box exclusion logic. When you are flagged as ineligible for opportunities like the **L'Oréal For Young Women in STEM Fellowship**, the decision is governed by hard disqualifiers:
+ScholarAI uses explicit, non-black-box exclusion logic. When you are flagged as ineligible for opportunities like the **L'Oréal India For Young Women in Science Scholarship (FYWIS)**, the decision is governed by hard disqualifiers:
 
 1. **Gender Eligibility Constraint**:
    - **Requirement**: Restricted exclusively to female applicants.
@@ -124,7 +124,7 @@ We found ${closingWeek.length} urgent opportunities closing soon:
 
 ${list}
 
-*Recommendation: Submit the Tata Merit Endowment first as it is closest to deadline and your application checklist is 95% complete.*`,
+*Recommendation: Submit the Tata Trusts Individual Grants first as it is closest to deadline and your application checklist is 95% complete.*`,
       actionLinks: [
         { label: 'Open Deadline Calendar', url: '/calendar' },
         { label: 'Open Application Pipeline', url: '/applications' },

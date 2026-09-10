@@ -30,9 +30,24 @@ const KEYS = {
   NOTIFICATIONS: 'scholarai_notifications',
   MANUAL_REVIEWS: 'scholarai_manual_reviews',
   RULES: 'scholarai_rules',
+  DATA_VERSION: 'scholarai_data_version',
 };
 
+const CURRENT_DATA_VERSION = 'v4_real_scholarships_gazette';
+
 export class StorageService {
+  private static checkVersionMigration(): void {
+    const version = localStorage.getItem(KEYS.DATA_VERSION);
+    if (version !== CURRENT_DATA_VERSION) {
+      localStorage.setItem(KEYS.SCHOLARSHIPS, JSON.stringify(INITIAL_SCHOLARSHIPS));
+      localStorage.setItem(KEYS.APPLICATIONS, JSON.stringify(INITIAL_APPLICATIONS));
+      localStorage.setItem(KEYS.RULES, JSON.stringify(INITIAL_RULES));
+      localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
+      localStorage.setItem(KEYS.MANUAL_REVIEWS, JSON.stringify(INITIAL_MANUAL_REVIEWS));
+      localStorage.setItem(KEYS.DATA_VERSION, CURRENT_DATA_VERSION);
+    }
+  }
+
   static getCurrentRole(): UserRole {
     const saved = localStorage.getItem(KEYS.CURRENT_ROLE);
     return (saved as UserRole) || 'student';
@@ -65,6 +80,7 @@ export class StorageService {
   }
 
   static getScholarships(): Scholarship[] {
+    this.checkVersionMigration();
     const saved = localStorage.getItem(KEYS.SCHOLARSHIPS);
     if (!saved) {
       this.setScholarships(INITIAL_SCHOLARSHIPS);

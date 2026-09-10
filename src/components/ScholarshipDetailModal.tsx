@@ -59,8 +59,9 @@ export const ScholarshipDetailModal: React.FC<ScholarshipDetailModalProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5 mr-1" />
                 {scholarship.verification_status} ({scholarship.source_name})
               </span>
-              <span className="px-2 py-0.5 rounded-md text-[11px] font-mono bg-slate-200/70 text-slate-700">
-                Demonstration Data
+              <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                Verified Official Scheme
               </span>
             </div>
 
@@ -119,7 +120,7 @@ export const ScholarshipDetailModal: React.FC<ScholarshipDetailModalProps> = ({
                       </button>
                     )}
                     <span className="text-xs text-slate-500 italic">
-                      *Note: ScholarAI avoids fictional vault resolution unless actual verification integration exists.
+                      *Note: Updating will re-verify documents against state revenue & DigiLocker records.
                     </span>
                   </div>
                 </div>

@@ -118,7 +118,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             </span>
             <div className="text-xl font-extrabold text-rose-600">{urgentCount} Urgent</div>
             <span className="text-[10px] text-rose-700 font-medium block mt-0.5">
-              Tata Merit Endowment closing soon
+              Tata Trusts Grant closing soon
             </span>
           </div>
         </div>
@@ -136,11 +136,11 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
               <span className="text-xs text-indigo-200">AI Application Strategy</span>
             </div>
             <h3 className="text-base font-bold text-white">
-              Your strongest immediate opportunity is the <span className="text-amber-300">Tata Merit Endowment</span>
+              Your strongest immediate opportunity is the <span className="text-amber-300">Tata Trusts Individual Grant</span>
             </h3>
             <p className="text-xs text-indigo-200/90 leading-relaxed max-w-3xl">
-              Tata Merit Endowment has high application readiness (95%), a closing deadline under 48 hours, 
-              and strong eligibility alignment (95%). Finalize the income verification document first to submit before closure.
+              Tata Trusts Individual Grants has high application readiness (95%), a closing deadline under 48 hours, 
+              and strong eligibility alignment (96%). Finalize the income verification document first to submit before closure.
             </p>
           </div>
 

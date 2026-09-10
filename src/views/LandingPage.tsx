@@ -175,10 +175,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600 text-white">
                     48h Remaining
                   </span>
-                  <span className="text-xs font-bold text-slate-900">Tata Merit Endowment for Higher Education</span>
+                  <span className="text-xs font-bold text-slate-900">Tata Trusts Individual Grants for Undergraduate Studies</span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
-                  Why you match: Academic requirement satisfied (86.4% vs 80%) • B.Com discipline aligned • State eligible.
+                  Why you match: Academic requirement satisfied (86.4% vs 75%) • B.Com discipline aligned • State eligible.
                 </p>
               </div>
 
