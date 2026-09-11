@@ -8,6 +8,7 @@ import {
   EligibilityRule,
   User,
   UserRole,
+  ThemeMode,
 } from '../types';
 import {
   DEMO_USER_STUDENT,
@@ -23,6 +24,7 @@ import {
 
 const KEYS = {
   CURRENT_ROLE: 'scholarai_current_role',
+  THEME: 'scholarai_theme',
   STUDENT_PROFILE: 'scholarai_student_profile',
   SCHOLARSHIPS: 'scholarai_scholarships',
   APPLICATIONS: 'scholarai_applications',
@@ -46,6 +48,18 @@ export class StorageService {
       localStorage.setItem(KEYS.MANUAL_REVIEWS, JSON.stringify(INITIAL_MANUAL_REVIEWS));
       localStorage.setItem(KEYS.DATA_VERSION, CURRENT_DATA_VERSION);
     }
+  }
+
+  static getTheme(): ThemeMode {
+    const saved = localStorage.getItem(KEYS.THEME);
+    if (saved === 'midnight' || saved === 'sunset' || saved === 'emerald' || saved === 'aurora') {
+      return saved as ThemeMode;
+    }
+    return 'aurora';
+  }
+
+  static setTheme(theme: ThemeMode): void {
+    localStorage.setItem(KEYS.THEME, theme);
   }
 
   static getCurrentRole(): UserRole {

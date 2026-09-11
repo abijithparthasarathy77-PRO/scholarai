@@ -6,9 +6,9 @@
   }
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #f8fafc;
     color: #0f172a;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
@@ -21,7 +21,7 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
@@ -31,16 +31,303 @@
   background: #94a3b8;
 }
 
-/* Glassmorphic highlights & cards */
+/* Theme Base Colors */
+.theme-bg-aurora {
+  background-color: #f8fafc;
+}
+.theme-bg-midnight {
+  background-color: #080c15;
+}
+.theme-bg-sunset {
+  background-color: #fff9f6;
+}
+.theme-bg-emerald {
+  background-color: #f7fdfa;
+}
+
+/* Dynamic Animated Gradient Mesh Layers */
+.animated-gradient-aurora {
+  background: linear-gradient(-45deg, #eef2ff, #f5f3ff, #ecfeff, #fdf2f8);
+  background-size: 400% 400%;
+  animation: gradientFlow 18s ease infinite;
+}
+
+.animated-gradient-midnight {
+  background: linear-gradient(-45deg, #050811, #0c1222, #160d29, #09131d);
+  background-size: 400% 400%;
+  animation: gradientFlow 20s ease infinite;
+}
+
+.animated-gradient-sunset {
+  background: linear-gradient(-45deg, #fff1f2, #fffbeb, #fef2f2, #fff7ed);
+  background-size: 400% 400%;
+  animation: gradientFlow 16s ease infinite;
+}
+
+.animated-gradient-emerald {
+  background: linear-gradient(-45deg, #f0fdf4, #ecfeff, #f0fdfa, #f7fee7);
+  background-size: 400% 400%;
+  animation: gradientFlow 18s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating Aurora Glowing Orbs */
+.animate-orb-1 {
+  animation: orbDrift1 22s ease-in-out infinite alternate;
+}
+.animate-orb-2 {
+  animation: orbDrift2 26s ease-in-out infinite alternate;
+}
+.animate-orb-3 {
+  animation: orbDrift3 20s ease-in-out infinite alternate;
+}
+.animate-orb-4 {
+  animation: orbDrift4 24s ease-in-out infinite alternate;
+}
+
+@keyframes orbDrift1 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(120px, 80px) scale(1.15) rotate(25deg);
+  }
+  66% {
+    transform: translate(-60px, 140px) scale(0.9) rotate(-15deg);
+  }
+  100% {
+    transform: translate(90px, -40px) scale(1.1) rotate(10deg);
+  }
+}
+
+@keyframes orbDrift2 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(-140px, 100px) scale(1.1) rotate(-20deg);
+  }
+  66% {
+    transform: translate(50px, -80px) scale(1.2) rotate(30deg);
+  }
+  100% {
+    transform: translate(-100px, 60px) scale(0.95) rotate(-10deg);
+  }
+}
+
+@keyframes orbDrift3 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(150px, -110px) scale(1.25) rotate(45deg);
+  }
+  100% {
+    transform: translate(-80px, -60px) scale(0.85) rotate(-30deg);
+  }
+}
+
+@keyframes orbDrift4 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(-120px, -100px) scale(1.2) rotate(-40deg);
+  }
+  100% {
+    transform: translate(80px, 90px) scale(0.9) rotate(20deg);
+  }
+}
+
+/* Orb Colors: Aurora Theme */
+.orb-color-1-aurora {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.55) 0%, rgba(168, 85, 247, 0.25) 45%, transparent 70%);
+}
+.orb-color-2-aurora {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.45) 0%, rgba(59, 130, 246, 0.2) 45%, transparent 70%);
+}
+.orb-color-3-aurora {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.45) 0%, rgba(236, 72, 153, 0.2) 45%, transparent 70%);
+}
+.orb-color-4-aurora {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(14, 165, 233, 0.18) 45%, transparent 70%);
+}
+
+/* Orb Colors: Midnight Theme */
+.orb-color-1-midnight {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(99, 102, 241, 0.3) 45%, transparent 70%);
+}
+.orb-color-2-midnight {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.5) 0%, rgba(59, 130, 246, 0.25) 45%, transparent 70%);
+}
+.orb-color-3-midnight {
+  background: radial-gradient(circle, rgba(232, 121, 249, 0.45) 0%, rgba(147, 51, 234, 0.25) 45%, transparent 70%);
+}
+.orb-color-4-midnight {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.45) 0%, rgba(99, 102, 241, 0.25) 45%, transparent 70%);
+}
+
+/* Orb Colors: Sunset Theme */
+.orb-color-1-sunset {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.55) 0%, rgba(251, 146, 60, 0.25) 45%, transparent 70%);
+}
+.orb-color-2-sunset {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 0%, rgba(234, 179, 8, 0.22) 45%, transparent 70%);
+}
+.orb-color-3-sunset {
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.45) 0%, rgba(249, 115, 22, 0.22) 45%, transparent 70%);
+}
+.orb-color-4-sunset {
+  background: radial-gradient(circle, rgba(253, 186, 116, 0.4) 0%, rgba(244, 63, 94, 0.18) 45%, transparent 70%);
+}
+
+/* Orb Colors: Emerald Theme */
+.orb-color-1-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.55) 0%, rgba(20, 184, 166, 0.25) 45%, transparent 70%);
+}
+.orb-color-2-emerald {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.5) 0%, rgba(14, 165, 233, 0.22) 45%, transparent 70%);
+}
+.orb-color-3-emerald {
+  background: radial-gradient(circle, rgba(132, 204, 22, 0.4) 0%, rgba(16, 185, 129, 0.22) 45%, transparent 70%);
+}
+.orb-color-4-emerald {
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.45) 0%, rgba(5, 150, 105, 0.2) 45%, transparent 70%);
+}
+
+/* Micro Grid Pattern */
+.grid-pattern-aurora {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.16) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+}
+.grid-pattern-midnight {
+  background-image: radial-gradient(rgba(168, 85, 247, 0.22) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+}
+.grid-pattern-sunset {
+  background-image: radial-gradient(rgba(244, 63, 94, 0.16) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+}
+.grid-pattern-emerald {
+  background-image: radial-gradient(rgba(16, 185, 129, 0.16) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+}
+
+/* Floating Stardust Particles */
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-50px) scale(1.2);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(-110px) scale(0.8);
+    opacity: 0.2;
+  }
+}
+
+.animate-float-particle {
+  animation: floatParticle ease-in-out infinite;
+}
+
+.particle-aurora {
+  background-color: rgba(99, 102, 241, 0.8);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.9);
+}
+.particle-midnight {
+  background-color: rgba(34, 211, 238, 0.9);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 1);
+}
+.particle-sunset {
+  background-color: rgba(245, 158, 11, 0.85);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.9);
+}
+.particle-emerald {
+  background-color: rgba(16, 185, 129, 0.85);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.9);
+}
+
+/* Glassmorphic Highlights & Translucent Cards */
 .scholar-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .scholar-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  transform: translateY(-2px);
+  border-color: rgba(165, 180, 252, 0.8);
+  box-shadow: 0 16px 30px -6px rgba(99, 102, 241, 0.12), 0 8px 12px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* Glass container panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+}
+
+/* Dark theme overrides for cards and panels */
+.theme-dark-surface .scholar-card {
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+}
+.theme-dark-surface .scholar-card:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 16px 30px -6px rgba(168, 85, 247, 0.2);
+}
+.theme-dark-surface .glass-panel {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Micro-animations */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-scaleIn {
+  animation: scaleIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .badge-pulse {

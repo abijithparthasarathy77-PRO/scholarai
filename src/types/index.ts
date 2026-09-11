@@ -191,3 +191,5 @@ export interface EligibilityRule {
   description: string;
   created_at: string;
 }
+
+export type ThemeMode = 'aurora' | 'midnight' | 'sunset' | 'emerald';

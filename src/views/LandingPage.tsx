@@ -1,4 +1,6 @@
 import React from 'react';
+import { ThemeMode } from '../types';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -18,6 +20,8 @@ interface LandingPageProps {
   onExploreDashboard: () => void;
   onExploreCatalog: () => void;
   onNavigateToLogin: () => void;
+  currentTheme: ThemeMode;
+  onSelectTheme: (theme: ThemeMode) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
@@ -25,46 +29,66 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onExploreDashboard,
   onExploreCatalog,
   onNavigateToLogin,
+  currentTheme,
+  onSelectTheme,
 }) => {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className={`min-h-screen bg-transparent flex flex-col selection:bg-indigo-500 selection:text-white relative z-10 ${
+      currentTheme === 'midnight' ? 'text-slate-100' : 'text-slate-900'
+    }`}>
       {/* Top Notice */}
-      <div className="bg-indigo-900 text-indigo-100 text-xs py-2 px-4 text-center font-medium">
+      <div className="bg-indigo-950/80 backdrop-blur-md text-indigo-200 text-xs py-2 px-4 text-center font-medium border-b border-indigo-800/40">
         ✨ <strong>ScholarAI 2026 Release</strong>: Non-black-box explainable eligibility engine with 5-dimensional audit is now active.
       </div>
 
       {/* Header */}
       <header className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
         <div className="flex items-center space-x-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-sm">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xl font-black tracking-tight text-slate-950 font-sans">
+            <span className={`text-xl font-black tracking-tight font-sans ${
+              currentTheme === 'midnight' ? 'text-white' : 'text-slate-950'
+            }`}>
               SCHOLAR<span className="text-indigo-600">AI</span>
             </span>
-            <span className="text-[11px] block font-semibold text-slate-500 -mt-1">
+            <span className="text-[11px] block font-semibold text-slate-400 -mt-1">
               Find the funding you're eligible for.
             </span>
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
+          <ThemeSwitcher 
+            currentTheme={currentTheme} 
+            onSelectTheme={onSelectTheme} 
+            compact 
+          />
+
           <button
             onClick={onExploreCatalog}
-            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 rounded-lg"
+            className={`text-xs font-semibold px-3 py-2 rounded-lg transition-colors ${
+              currentTheme === 'midnight' 
+                ? 'text-slate-300 hover:text-white' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
           >
             Explore Schemes
           </button>
           <button
             onClick={onNavigateToLogin}
-            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-lg border border-indigo-200 bg-white hover:bg-indigo-50 shadow-2xs transition-colors"
+            className={`text-xs font-bold px-3 py-2 rounded-xl border shadow-2xs transition-colors ${
+              currentTheme === 'midnight'
+                ? 'text-indigo-300 border-indigo-500/40 bg-slate-900/80 hover:bg-slate-800'
+                : 'text-indigo-600 hover:text-indigo-800 border-indigo-200 bg-white/90 hover:bg-indigo-50'
+            }`}
           >
             Sign In / Login
           </button>
           <button
             onClick={onExploreDashboard}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
+            className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-indigo-500/25 transition-all"
           >
             Launch Aarav's Demo
           </button>
