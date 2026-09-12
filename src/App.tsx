@@ -200,8 +200,8 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Navigation Bar (hidden on landing, onboarding, and login) */}
-      {currentTab !== 'landing' && currentTab !== 'onboarding' && currentTab !== 'login' && (
+      {/* Navigation Bar (hidden on landing, onboarding, login, and admin) */}
+      {currentTab !== 'landing' && currentTab !== 'onboarding' && currentTab !== 'login' && currentTab !== 'admin' && (
         <Navigation
           currentTab={currentTab}
           onSelectTab={setCurrentTab}
@@ -214,15 +214,15 @@ export const App: React.FC = () => {
           onResetDemo={handleResetDemo}
           currentTheme={currentTheme}
           onSelectTheme={handleSelectTheme}
-          onSignOut={() => {
-            setCurrentTab('login');
-            showToast('Signed out of session');
-          }}
+          onSignOut={handleSignOut}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          adminSubTab={adminSubTab}
+          onSelectAdminSubTab={setAdminSubTab}
         />
       )}
 
       {/* Main View Switcher */}
-      <main className="flex-1 relative z-10">
+      <main className={`flex-1 relative z-10 ${currentTab !== 'landing' && currentTab !== 'login' && currentTab !== 'onboarding' && currentTab !== 'admin' ? 'pt-20 sm:pt-24' : 'pt-4 sm:pt-6'}`}>
         {currentTab === 'login' && (
           <LoginPage
             onLoginSuccess={(role) => {
@@ -449,12 +449,15 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Mobile Bottom Navigation */}
-      {currentTab !== 'landing' && currentTab !== 'onboarding' && currentTab !== 'login' && (
+      {/* Mobile Bottom Navigation - Student Only */}
+      {currentRole === 'student' && currentTab !== 'landing' && currentTab !== 'onboarding' && currentTab !== 'login' && (
         <MobileBottomNav
           currentTab={currentTab}
           onSelectTab={setCurrentTab}
           onOpenAdvisor={() => setIsAdvisorOpen(true)}
+          currentRole={currentRole}
+          adminSubTab={adminSubTab}
+          onSelectAdminSubTab={setAdminSubTab}
         />
       )}
     </div>
