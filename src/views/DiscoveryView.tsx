@@ -155,15 +155,15 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
       </div>
 
       {/* Natural Language Search Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
+      <div className="scholar-card rounded-2xl border p-4 sm:p-5 shadow-xs space-y-3">
         <div className="relative">
-          <Search className="absolute left-4 top-3.5 w-5 h-5 text-indigo-600" />
+          <Search className="absolute left-4 top-3.5 w-5 h-5 text-indigo-600 dark:text-indigo-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Find scholarships for B.Com students with financial need closing this month..."
-            className="w-full pl-12 pr-10 py-3 rounded-xl border border-slate-300 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-hidden transition-all"
+            className="w-full pl-12 pr-10 py-3 rounded-xl border border-inherit/20 bg-slate-500/5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-hidden transition-all text-inherit placeholder:opacity-50"
           />
           {searchQuery && (
             <button
@@ -214,10 +214,10 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
       {/* Main Container: Filter Rail + Results Area */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Filter Rail */}
-        <div className="lg:col-span-1 space-y-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs h-fit">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div className="flex items-center space-x-2 font-bold text-sm text-slate-900">
-              <SlidersHorizontal className="w-4 h-4 text-indigo-600" />
+        <div className="lg:col-span-1 space-y-5 scholar-card p-5 rounded-2xl border shadow-xs h-fit">
+          <div className="flex items-center justify-between pb-3 border-b border-inherit/15">
+            <div className="flex items-center space-x-2 font-bold text-sm text-inherit">
+              <SlidersHorizontal className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
               <span>Filter Criteria</span>
             </div>
             {hasActiveFilters && (

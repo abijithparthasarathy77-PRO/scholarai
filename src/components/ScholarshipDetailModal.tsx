@@ -44,7 +44,7 @@ export const ScholarshipDetailModal: React.FC<ScholarshipDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-fadeIn">
       <div 
-        className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full my-8 max-h-[92vh] flex flex-col relative overflow-hidden"
+        className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full my-8 max-h-[92vh] flex flex-col relative overflow-hidden animate-modal-popup"
         onClick={e => e.stopPropagation()}
       >
         {/* Top Header */}
