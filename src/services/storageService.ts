@@ -1,289 +1,286 @@
-import {
-  StudentProfile,
-  Scholarship,
-  Application,
-  StudentDocument,
-  NotificationItem,
-  ManualReviewRequest,
-  EligibilityRule,
-  User,
-  UserRole,
-  ThemeMode,
-} from '../types';
-import {
-  DEMO_USER_STUDENT,
-  DEMO_USER_ADMIN,
-  DEMO_STUDENT_PROFILE,
-  INITIAL_DOCUMENTS,
-  INITIAL_SCHOLARSHIPS,
-  INITIAL_APPLICATIONS,
-  INITIAL_NOTIFICATIONS,
-  INITIAL_MANUAL_REVIEWS,
-  INITIAL_RULES,
-} from '../data/mockData';
+import { StudentProfile, StudentDocument, ApplicationItem, Scholarship, EligibilityRule } from '../types';
+import { initialStudent, initialDocuments, initialApplications } from '../data/initialStudent';
+import { initialScholarships } from '../data/initialScholarships';
+import { recalculateAllScholarships } from './matchingEngine';
+
+const STORAGE_VERSION = 'v3';
 
 const KEYS = {
-  CURRENT_ROLE: 'scholarai_current_role',
-  THEME: 'scholarai_theme',
-  STUDENT_PROFILE: 'scholarai_student_profile',
-  SCHOLARSHIPS: 'scholarai_scholarships',
-  APPLICATIONS: 'scholarai_applications',
-  DOCUMENTS: 'scholarai_documents',
-  NOTIFICATIONS: 'scholarai_notifications',
-  MANUAL_REVIEWS: 'scholarai_manual_reviews',
-  RULES: 'scholarai_rules',
-  DATA_VERSION: 'scholarai_data_version',
+  VERSION: 'scholarai_data_version',
+  STUDENT: `scholarai_${STORAGE_VERSION}_student_profile`,
+  DOCUMENTS: `scholarai_${STORAGE_VERSION}_documents`,
+  APPLICATIONS: `scholarai_${STORAGE_VERSION}_applications`,
+  SCHOLARSHIPS: `scholarai_${STORAGE_VERSION}_scholarships`,
+  RULES: `scholarai_${STORAGE_VERSION}_rules`
 };
 
-const CURRENT_DATA_VERSION = 'v4_real_scholarships_gazette';
+// Legacy keys to clean up to prevent old schema conflicts
+const LEGACY_KEYS = [
+  'scholarai_student_profile',
+  'scholarai_documents',
+  'scholarai_applications',
+  'scholarai_scholarships',
+  'scholarai_rules',
+  'scholarai_current_role',
+  'scholarai_theme'
+];
 
-export class StorageService {
-  private static checkVersionMigration(): void {
-    const version = localStorage.getItem(KEYS.DATA_VERSION);
-    if (version !== CURRENT_DATA_VERSION) {
-      localStorage.setItem(KEYS.SCHOLARSHIPS, JSON.stringify(INITIAL_SCHOLARSHIPS));
-      localStorage.setItem(KEYS.APPLICATIONS, JSON.stringify(INITIAL_APPLICATIONS));
-      localStorage.setItem(KEYS.RULES, JSON.stringify(INITIAL_RULES));
-      localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
-      localStorage.setItem(KEYS.MANUAL_REVIEWS, JSON.stringify(INITIAL_MANUAL_REVIEWS));
-      localStorage.setItem(KEYS.DATA_VERSION, CURRENT_DATA_VERSION);
+function sanitizeStorage() {
+  try {
+    const currentVersion = localStorage.getItem(KEYS.VERSION);
+    if (currentVersion !== STORAGE_VERSION) {
+      // Clear legacy keys from previous app schema
+      LEGACY_KEYS.forEach((k) => localStorage.removeItem(k));
+      localStorage.setItem(KEYS.VERSION, STORAGE_VERSION);
     }
-  }
-
-  static getTheme(): ThemeMode {
-    const saved = localStorage.getItem(KEYS.THEME);
-    if (saved === 'midnight' || saved === 'sunset' || saved === 'emerald' || saved === 'aurora') {
-      return saved as ThemeMode;
-    }
-    return 'aurora';
-  }
-
-  static setTheme(theme: ThemeMode): void {
-    localStorage.setItem(KEYS.THEME, theme);
-  }
-
-  static getCurrentRole(): UserRole {
-    const saved = localStorage.getItem(KEYS.CURRENT_ROLE);
-    return (saved as UserRole) || 'student';
-  }
-
-  static setCurrentRole(role: UserRole): void {
-    localStorage.setItem(KEYS.CURRENT_ROLE, role);
-  }
-
-  static getCurrentUser(): User {
-    const role = this.getCurrentRole();
-    return role === 'admin' ? DEMO_USER_ADMIN : DEMO_USER_STUDENT;
-  }
-
-  static getStudentProfile(): StudentProfile {
-    const saved = localStorage.getItem(KEYS.STUDENT_PROFILE);
-    if (!saved) {
-      this.setStudentProfile(DEMO_STUDENT_PROFILE);
-      return DEMO_STUDENT_PROFILE;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return DEMO_STUDENT_PROFILE;
-    }
-  }
-
-  static setStudentProfile(profile: StudentProfile): void {
-    localStorage.setItem(KEYS.STUDENT_PROFILE, JSON.stringify(profile));
-  }
-
-  static getScholarships(): Scholarship[] {
-    this.checkVersionMigration();
-    const saved = localStorage.getItem(KEYS.SCHOLARSHIPS);
-    if (!saved) {
-      this.setScholarships(INITIAL_SCHOLARSHIPS);
-      return INITIAL_SCHOLARSHIPS;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_SCHOLARSHIPS;
-    }
-  }
-
-  static setScholarships(scholarships: Scholarship[]): void {
-    localStorage.setItem(KEYS.SCHOLARSHIPS, JSON.stringify(scholarships));
-  }
-
-  static updateScholarship(scholarship: Scholarship): void {
-    const list = this.getScholarships();
-    const idx = list.findIndex(s => s.id === scholarship.id);
-    if (idx >= 0) {
-      list[idx] = scholarship;
-    } else {
-      list.unshift(scholarship);
-    }
-    this.setScholarships(list);
-  }
-
-  static getApplications(): Application[] {
-    const saved = localStorage.getItem(KEYS.APPLICATIONS);
-    if (!saved) {
-      this.setApplications(INITIAL_APPLICATIONS);
-      return INITIAL_APPLICATIONS;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_APPLICATIONS;
-    }
-  }
-
-  static setApplications(apps: Application[]): void {
-    localStorage.setItem(KEYS.APPLICATIONS, JSON.stringify(apps));
-  }
-
-  static updateApplicationStage(appId: string, newStage: Application['stage']): void {
-    const apps = this.getApplications();
-    const target = apps.find(a => a.id === appId);
-    if (target) {
-      target.stage = newStage;
-      target.updated_at = new Date().toISOString();
-      if (newStage === 'applied' && !target.submitted_at) {
-        target.submitted_at = new Date().toISOString();
-        target.progress_percentage = 100;
-      }
-      this.setApplications(apps);
-    }
-  }
-
-  static addApplication(app: Application): void {
-    const apps = this.getApplications();
-    const exists = apps.find(a => a.scholarship_id === app.scholarship_id);
-    if (!exists) {
-      apps.push(app);
-      this.setApplications(apps);
-    }
-  }
-
-  static getDocuments(): StudentDocument[] {
-    const saved = localStorage.getItem(KEYS.DOCUMENTS);
-    if (!saved) {
-      this.setDocuments(INITIAL_DOCUMENTS);
-      return INITIAL_DOCUMENTS;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_DOCUMENTS;
-    }
-  }
-
-  static setDocuments(docs: StudentDocument[]): void {
-    localStorage.setItem(KEYS.DOCUMENTS, JSON.stringify(docs));
-  }
-
-  static renewDocument(docId: string): void {
-    const docs = this.getDocuments();
-    const doc = docs.find(d => d.id === docId);
-    if (doc) {
-      doc.status = 'verified';
-      doc.is_expired = false;
-      doc.issue_date = '2026-08-01';
-      doc.expiry_date = '2027-03-31';
-      doc.notes = 'Renewed and verified with Tahsildar Digital Certificate (FY 2026-27)';
-      doc.action_label = undefined;
-      this.setDocuments(docs);
-    }
-  }
-
-  static getNotifications(): NotificationItem[] {
-    const saved = localStorage.getItem(KEYS.NOTIFICATIONS);
-    if (!saved) {
-      this.setNotifications(INITIAL_NOTIFICATIONS);
-      return INITIAL_NOTIFICATIONS;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_NOTIFICATIONS;
-    }
-  }
-
-  static setNotifications(notifs: NotificationItem[]): void {
-    localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(notifs));
-  }
-
-  static markNotificationRead(id: string): void {
-    const notifs = this.getNotifications();
-    const target = notifs.find(n => n.id === id);
-    if (target) {
-      target.read = true;
-      this.setNotifications(notifs);
-    }
-  }
-
-  static getManualReviews(): ManualReviewRequest[] {
-    const saved = localStorage.getItem(KEYS.MANUAL_REVIEWS);
-    if (!saved) {
-      this.setManualReviews(INITIAL_MANUAL_REVIEWS);
-      return INITIAL_MANUAL_REVIEWS;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_MANUAL_REVIEWS;
-    }
-  }
-
-  static setManualReviews(reviews: ManualReviewRequest[]): void {
-    localStorage.setItem(KEYS.MANUAL_REVIEWS, JSON.stringify(reviews));
-  }
-
-  static addManualReview(review: ManualReviewRequest): void {
-    const reviews = this.getManualReviews();
-    reviews.unshift(review);
-    this.setManualReviews(reviews);
-  }
-
-  static updateManualReviewStatus(id: string, status: ManualReviewRequest['status'], adminNotes?: string): void {
-    const reviews = this.getManualReviews();
-    const target = reviews.find(r => r.id === id);
-    if (target) {
-      target.status = status;
-      if (adminNotes) target.admin_notes = adminNotes;
-      target.updated_at = new Date().toISOString();
-      this.setManualReviews(reviews);
-    }
-  }
-
-  static getRules(): EligibilityRule[] {
-    const saved = localStorage.getItem(KEYS.RULES);
-    if (!saved) {
-      this.setRules(INITIAL_RULES);
-      return INITIAL_RULES;
-    }
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_RULES;
-    }
-  }
-
-  static setRules(rules: EligibilityRule[]): void {
-    localStorage.setItem(KEYS.RULES, JSON.stringify(rules));
-  }
-
-  static addRule(rule: EligibilityRule): void {
-    const rules = this.getRules();
-    rules.unshift(rule);
-    this.setRules(rules);
-  }
-
-  static resetToDemo(): void {
-    localStorage.removeItem(KEYS.CURRENT_ROLE);
-    localStorage.removeItem(KEYS.STUDENT_PROFILE);
-    localStorage.removeItem(KEYS.SCHOLARSHIPS);
-    localStorage.removeItem(KEYS.APPLICATIONS);
-    localStorage.removeItem(KEYS.DOCUMENTS);
-    localStorage.removeItem(KEYS.NOTIFICATIONS);
-    localStorage.removeItem(KEYS.MANUAL_REVIEWS);
-    localStorage.removeItem(KEYS.RULES);
+  } catch {
+    // localStorage might be unavailable
   }
 }
+
+// Run sanitation on module load
+sanitizeStorage();
+
+const initialRules: EligibilityRule[] = [
+  {
+    id: 'rule-01',
+    name: 'Commerce & Finance Merit Grant Rule',
+    targetScholarship: 'Tata Merit Endowment for Higher Education',
+    conditions: [
+      { field: 'degree', operator: '=', value: 'B.Com (Honours)' },
+      { field: 'academicScore', operator: '>=', value: 75 },
+      { field: 'familyIncome', operator: '<=', value: 600000 },
+      { field: 'domicile', operator: '=', value: 'Maharashtra' }
+    ],
+    logicOperator: 'AND',
+    outcome: 'Potentially Eligible',
+    createdAt: '2026-09-01'
+  },
+  {
+    id: 'rule-02',
+    name: 'National UG Need-cum-Merit Rule',
+    targetScholarship: 'Reliance Foundation Undergraduate Scholarship',
+    conditions: [
+      { field: 'academicScore', operator: '>=', value: 60 },
+      { field: 'familyIncome', operator: '<=', value: 1500000 }
+    ],
+    logicOperator: 'AND',
+    outcome: 'Potentially Eligible',
+    createdAt: '2026-09-02'
+  }
+];
+
+export const storageService = {
+  getStudent(): StudentProfile {
+    try {
+      const data = localStorage.getItem(KEYS.STUDENT);
+      if (data) {
+        const parsed = JSON.parse(data);
+        // Validate that parsed student has expected new schema fields
+        if (parsed && typeof parsed.academicScore === 'number' && parsed.stateDomicile) {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    this.saveStudent(initialStudent);
+    return initialStudent;
+  },
+
+  saveStudent(student: StudentProfile): void {
+    try {
+      localStorage.setItem(KEYS.STUDENT, JSON.stringify(student));
+    } catch {
+      // ignore
+    }
+  },
+
+  getDocuments(): StudentDocument[] {
+    try {
+      const data = localStorage.getItem(KEYS.DOCUMENTS);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].status) {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    this.saveDocuments(initialDocuments);
+    return initialDocuments;
+  },
+
+  saveDocuments(docs: StudentDocument[]): void {
+    try {
+      localStorage.setItem(KEYS.DOCUMENTS, JSON.stringify(docs));
+    } catch {
+      // ignore
+    }
+  },
+
+  updateDocumentStatus(docId: string, newStatus: StudentDocument['status'], newNotes?: string): {
+    documents: StudentDocument[];
+    scholarships: Scholarship[];
+    student: StudentProfile;
+  } {
+    const docs = this.getDocuments();
+    const updatedDocs = docs.map((d) => {
+      if (d.id === docId) {
+        return {
+          ...d,
+          status: newStatus,
+          aiCheckStatus: (newStatus === 'READY' ? 'Verified' : newStatus === 'EXPIRED' ? 'Expired' : 'Pending Review') as StudentDocument['aiCheckStatus'],
+          aiCheckNotes: newNotes || (newStatus === 'READY' ? 'Document verified and active for application cycle.' : d.aiCheckNotes)
+        };
+      }
+      return d;
+    });
+
+    this.saveDocuments(updatedDocs);
+
+    const student = this.getStudent();
+    const currentScholarships = this.getScholarships();
+    const recalculated = recalculateAllScholarships(currentScholarships, student, updatedDocs);
+    this.saveScholarships(recalculated);
+
+    // Update applications readiness scores
+    const apps = this.getApplications();
+    const updatedApps = apps.map((app) => {
+      const sch = recalculated.find((s) => s.id === app.scholarshipId);
+      if (sch) {
+        return {
+          ...app,
+          readinessScore: sch.readinessScore,
+          priorityScore: sch.priorityScore,
+          blockers: sch.blockers,
+          nextAction: sch.nextAction
+        };
+      }
+      return app;
+    });
+    this.saveApplications(updatedApps);
+
+    return { documents: updatedDocs, scholarships: recalculated, student };
+  },
+
+  getScholarships(): Scholarship[] {
+    try {
+      const data = localStorage.getItem(KEYS.SCHOLARSHIPS);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.fiveD && typeof parsed[0]?.priorityScore === 'number') {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    const student = this.getStudent();
+    const docs = this.getDocuments();
+    const recalculated = recalculateAllScholarships(initialScholarships, student, docs);
+    this.saveScholarships(recalculated);
+    return recalculated;
+  },
+
+  saveScholarships(scholarships: Scholarship[]): void {
+    try {
+      localStorage.setItem(KEYS.SCHOLARSHIPS, JSON.stringify(scholarships));
+    } catch {
+      // ignore
+    }
+  },
+
+  getApplications(): ApplicationItem[] {
+    try {
+      const data = localStorage.getItem(KEYS.APPLICATIONS);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.status) {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    this.saveApplications(initialApplications);
+    return initialApplications;
+  },
+
+  saveApplications(apps: ApplicationItem[]): void {
+    try {
+      localStorage.setItem(KEYS.APPLICATIONS, JSON.stringify(apps));
+    } catch {
+      // ignore
+    }
+  },
+
+  updateApplicationStatus(appId: string, newStatus: ApplicationItem['status']): ApplicationItem[] {
+    const apps = this.getApplications();
+    const updated = apps.map((a) => (a.id === appId ? { ...a, status: newStatus, lastUpdated: 'Just now' } : a));
+    this.saveApplications(updated);
+    return updated;
+  },
+
+  addApplicationFromScholarship(scholarship: Scholarship): ApplicationItem[] {
+    const apps = this.getApplications();
+    const existing = apps.find((a) => a.scholarshipId === scholarship.id);
+    if (existing) return apps;
+
+    const newApp: ApplicationItem = {
+      id: `app-${Date.now()}`,
+      scholarshipId: scholarship.id,
+      scholarshipName: scholarship.name,
+      provider: scholarship.provider,
+      fundingAmount: scholarship.fundingAmount,
+      deadline: scholarship.deadline,
+      daysLeft: scholarship.daysLeft,
+      urgency: scholarship.urgency,
+      status: 'Interested',
+      matchScore: scholarship.matchScore,
+      readinessScore: scholarship.readinessScore,
+      priorityScore: scholarship.priorityScore,
+      blockers: scholarship.blockers,
+      nextAction: scholarship.nextAction,
+      lastUpdated: 'Just now'
+    };
+
+    const updated = [newApp, ...apps];
+    this.saveApplications(updated);
+    return updated;
+  },
+
+  getRules(): EligibilityRule[] {
+    try {
+      const data = localStorage.getItem(KEYS.RULES);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    this.saveRules(initialRules);
+    return initialRules;
+  },
+
+  saveRules(rules: EligibilityRule[]): void {
+    try {
+      localStorage.setItem(KEYS.RULES, JSON.stringify(rules));
+    } catch {
+      // ignore
+    }
+  },
+
+  resetAllToDefault(): void {
+    try {
+      Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+      LEGACY_KEYS.forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // ignore
+    }
+  }
+};
