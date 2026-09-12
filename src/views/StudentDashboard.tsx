@@ -3,6 +3,7 @@ import { StudentProfile, Scholarship, MatchResult, StudentDocument } from '../ty
 import { AISynthesisMatrix } from '../components/AISynthesisMatrix';
 import { UrgencyModule } from '../components/UrgencyModule';
 import { ScholarshipCard } from '../components/ScholarshipCard';
+import { Card3D } from '../components/Card3D';
 import { 
   Sparkles, 
   GraduationCap, 
@@ -63,102 +64,134 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn">
-      {/* Student Banner Header */}
-      <div className="rounded-3xl border border-white/80 p-6 sm:p-7 shadow-xl backdrop-blur-2xl glass-panel flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden group">
-        {/* Subtle Ambient Shimmer Corner */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-indigo-500/10 via-sky-500/5 to-transparent pointer-events-none rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
+      {/* Student Banner Header with 3D Tilt */}
+      <Card3D maxTilt={6} glare={true}>
+        <div className="rounded-3xl border border-white/80 dark:border-slate-800 p-6 sm:p-7 shadow-xl backdrop-blur-2xl glass-panel flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden group preserve-3d">
+          {/* Subtle Ambient Shimmer Corner */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-indigo-500/10 via-sky-500/5 to-transparent pointer-events-none rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
 
-        <div className="flex items-start sm:items-center space-x-4 z-10">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-500 text-white font-black text-xl flex items-center justify-center shadow-lg shrink-0 group-hover:rotate-3 transition-transform">
-            AS
+          <div className="flex items-start sm:items-center space-x-4 z-10 preserve-3d">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-500 text-white font-black text-xl flex items-center justify-center shadow-lg shrink-0 translate-z-40 group-hover:rotate-6 transition-transform">
+              AS
+            </div>
+            <div className="translate-z-20">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+                  {student.name}
+                </h1>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/25">
+                  ID: STU-2026-XAV-0482
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-500/10 text-inherit border border-inherit/20">
+                  {student.category}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center space-x-1">
+                  <ShieldCheck className="w-3 h-3 mr-0.5" />
+                  <span>Enrolled Student</span>
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm opacity-80 font-medium">
+                {student.year} • <strong className="text-inherit font-bold">{student.degree}</strong> • {student.institution}
+              </p>
+              <div className="flex flex-wrap items-center gap-3 text-xs opacity-70 mt-1.5">
+                <span>Academic Standing: <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{student.GPA} GPA</strong> ({student.percentage}%)</span>
+                <span>•</span>
+                <span>State Domicile: <strong className="text-inherit font-semibold">{student.domicile}</strong></span>
+                <span>•</span>
+                <span>Annual Household Income: <strong className="text-inherit font-semibold">₹{student.annual_income_inr.toLocaleString('en-IN')}</strong></span>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
-                {student.name}
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/15 text-indigo-600 border border-indigo-500/25">
-                Sample Student Profile
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-500/10 text-inherit border border-inherit/20">
-                {student.category}
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium">
-              {student.year} • <strong className="text-slate-900">{student.degree}</strong> • {student.institution}
-            </p>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1.5">
-              <span>GPA: <strong className="text-indigo-600">{student.GPA}</strong> ({student.percentage}%)</span>
-              <span>•</span>
-              <span>Domicile: <strong className="text-slate-700">{student.domicile}</strong></span>
-              <span>•</span>
-              <span>Income: <strong className="text-slate-700">₹{student.annual_income_inr.toLocaleString('en-IN')}/yr</strong></span>
-            </div>
+
+          <div className="flex items-center space-x-3 self-start md:self-auto z-10 translate-z-30">
+            <button
+              onClick={() => onNavigateTab('discover')}
+              className="px-5 py-3 btn-animated-glow text-white rounded-xl text-xs font-bold shadow-lg flex items-center space-x-2 cursor-pointer hover:scale-105 transition-transform"
+            >
+              <Compass className="w-4 h-4 animate-spin-slow" />
+              <span>Discover All 28 Schemes</span>
+            </button>
           </div>
         </div>
+      </Card3D>
 
-        <div className="flex items-center space-x-3 self-start md:self-auto z-10">
-          <button
-            onClick={() => onNavigateTab('discover')}
-            className="px-5 py-3 btn-animated-glow text-white rounded-xl text-xs font-bold shadow-lg flex items-center space-x-2 cursor-pointer"
-          >
-            <Compass className="w-4 h-4 animate-spin-slow" />
-            <span>Discover All 28 Matches</span>
-          </button>
-        </div>
-      </div>
-
-      {/* TOP 4 KEY METRICS */}
+      {/* TOP 4 KEY METRICS WITH INTERACTIVE 3D TILT */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Qualified Opportunities */}
-        <div className="scholar-card p-5 rounded-2xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Qualified Opportunities</span>
-            <div className="p-2 bg-indigo-500/15 text-indigo-600 rounded-xl">
-              <Sparkles className="w-4 h-4 animate-pulse" />
+        <Card3D maxTilt={7} glare={true} liftOnHover={-8} depthZ={24}>
+          <div className="scholar-card p-5 rounded-2xl border shadow-sm preserve-3d h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2 translate-z-20">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Qualified Schemes</span>
+                <div className="p-2 bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 rounded-xl translate-z-30">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-inherit tracking-tight translate-z-40">28</div>
+            </div>
+            <div className="mt-2 pt-2 border-t border-inherit/10 flex items-center justify-between text-[11px] translate-z-10">
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold">100% Verified</span>
+              <span className="opacity-60">+3 new this week</span>
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-inherit tracking-tight">28</div>
-          <p className="text-[11px] text-indigo-600 font-semibold mt-1">Verified schemes matching criteria</p>
-        </div>
+        </Card3D>
 
         {/* Metric 2: Potential Funding */}
-        <div className="scholar-card p-5 rounded-2xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Potential Funding</span>
-            <div className="p-2 bg-emerald-500/15 text-emerald-600 rounded-xl">
-              <Coins className="w-4 h-4" />
+        <Card3D maxTilt={7} glare={true} liftOnHover={-8} depthZ={24}>
+          <div className="scholar-card p-5 rounded-2xl border shadow-sm preserve-3d h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2 translate-z-20">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Potential Grants</span>
+                <div className="p-2 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-xl translate-z-30">
+                  <Coins className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight translate-z-40">₹4,85,000</div>
+            </div>
+            <div className="mt-2 pt-2 border-t border-inherit/10 flex items-center justify-between text-[11px] translate-z-10">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">DBT Direct Transfer</span>
+              <span className="opacity-60">Cumulative</span>
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 tracking-tight">₹4,85,000</div>
-          <p className="text-[10px] opacity-60 mt-1 italic leading-tight">
-            *Potential opportunity value, not guaranteed funds.
-          </p>
-        </div>
+        </Card3D>
 
         {/* Metric 3: Upcoming Deadlines */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xs transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Upcoming Deadlines</span>
-            <div className="p-2 bg-rose-50 text-rose-600 rounded-xl">
-              <Clock className="w-4 h-4" />
+        <Card3D maxTilt={7} glare={true} liftOnHover={-8} depthZ={24}>
+          <div className="scholar-card p-5 rounded-2xl border shadow-sm preserve-3d h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2 translate-z-20">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Active Deadlines</span>
+                <div className="p-2 bg-rose-500/15 text-rose-600 dark:text-rose-400 rounded-xl translate-z-30">
+                  <Clock className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 tracking-tight translate-z-40">5</div>
+            </div>
+            <div className="mt-2 pt-2 border-t border-inherit/10 flex items-center justify-between text-[11px] translate-z-10">
+              <span className="text-rose-600 dark:text-rose-400 font-bold">Next in 34h</span>
+              <span className="opacity-60">Tata Endowment</span>
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-rose-600 tracking-tight">5</div>
-          <p className="text-[11px] text-rose-700 font-semibold mt-1">Closing within the next 30 days</p>
-        </div>
+        </Card3D>
 
         {/* Metric 4: Profile Verification */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xs transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Profile Verification</span>
-            <div className="p-2 bg-sky-50 text-sky-600 rounded-xl">
-              <ShieldCheck className="w-4 h-4" />
+        <Card3D maxTilt={7} glare={true} liftOnHover={-8} depthZ={24}>
+          <div className="scholar-card p-5 rounded-2xl border shadow-sm preserve-3d h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2 translate-z-20">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Profile Health</span>
+                <div className="p-2 bg-sky-500/15 text-sky-600 dark:text-sky-400 rounded-xl translate-z-30">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-sky-600 dark:text-sky-400 tracking-tight translate-z-40">88%</div>
+            </div>
+            <div className="mt-2 pt-2 border-t border-inherit/10 flex items-center justify-between text-[11px] translate-z-10">
+              <span className="text-amber-600 dark:text-amber-400 font-bold">1 Doc Needs Renewal</span>
+              <span className="opacity-60">Income Cert</span>
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-sky-700 tracking-tight">88%</div>
-          <p className="text-[11px] text-amber-600 font-semibold mt-1">1 expired document needs update</p>
-        </div>
+        </Card3D>
       </div>
 
       {/* DOCUMENT EXPIRED BLOCKER NOTICE */}

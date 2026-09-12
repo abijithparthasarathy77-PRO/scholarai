@@ -1,6 +1,7 @@
 import React from 'react';
 import { ThemeMode } from '../types';
 import { ThemeSwitcher } from '../components/ThemeSwitcher';
+import { Card3D } from '../components/Card3D';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -123,7 +124,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
 
-        <div className="text-center max-w-3xl mx-auto space-y-6">
+        <div className="text-center max-w-3xl mx-auto space-y-6 relative z-20">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 text-xs font-bold backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse pulse-radar"></span>
             <ShieldCheck className="w-4 h-4 text-indigo-600" />
@@ -179,84 +180,86 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
 
-        {/* Hero Interactive Dashboard Preview Widget */}
-        <div className={`mt-12 lg:mt-16 max-w-5xl mx-auto rounded-3xl p-3 sm:p-5 border shadow-2xl backdrop-blur-xl ${
-          currentTheme === 'midnight'
-            ? 'bg-slate-900/60 border-slate-700/60 shadow-indigo-950/50'
-            : 'bg-white/70 border-white/80 shadow-indigo-500/10'
-        }`}>
-          <div className={`rounded-2xl border p-5 sm:p-7 space-y-6 backdrop-blur-xl ${
+        {/* Hero Interactive Dashboard Preview Widget in 3D */}
+        <Card3D maxTilt={7} glare={true} className="mt-12 lg:mt-16 max-w-5xl mx-auto">
+          <div className={`rounded-3xl p-3 sm:p-5 border shadow-2xl backdrop-blur-xl preserve-3d ${
             currentTheme === 'midnight'
-              ? 'bg-slate-950/70 border-slate-800 text-slate-100'
-              : 'bg-white/90 border-slate-200/80 text-slate-900'
+              ? 'bg-slate-900/60 border-slate-700/60 shadow-indigo-950/50'
+              : 'bg-white/70 border-white/80 shadow-indigo-500/10'
           }`}>
-            {/* Mock Header Inside Preview */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-inherit/20 gap-3">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 text-white font-bold flex items-center justify-center text-sm shadow-xs">
-                  AS
+            <div className={`rounded-2xl border p-5 sm:p-7 space-y-6 backdrop-blur-xl preserve-3d ${
+              currentTheme === 'midnight'
+                ? 'bg-slate-950/70 border-slate-800 text-slate-100'
+                : 'bg-white/90 border-slate-200/80 text-slate-900'
+            }`}>
+              {/* Mock Header Inside Preview */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-inherit/20 gap-3 translate-z-20">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 text-white font-bold flex items-center justify-center text-sm shadow-xs translate-z-30">
+                    AS
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-inherit text-sm sm:text-base">
+                      Aarav Sharma's Financial Intelligence Dashboard
+                    </h3>
+                    <span className="text-xs opacity-70">
+                      2nd Year B.Com Hons • St. Xavier's Mumbai • General-EWS
+                    </span>
+                  </div>
                 </div>
+
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 self-start sm:self-auto translate-z-20">
+                  Profile Verification: 88%
+                </span>
+              </div>
+
+              {/* Metrics Ribbon with 3D Pop-out */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left translate-z-30">
+                <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Qualified</span>
+                  <p className="text-lg font-black text-inherit">28 Opportunities</p>
+                </div>
+                <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Max Potential</span>
+                  <p className="text-lg font-black text-inherit">₹3,75,000</p>
+                </div>
+                <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-500">Urgent Closes</span>
+                  <p className="text-lg font-black text-inherit">1 in 48h</p>
+                </div>
+                <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500">Action Needed</span>
+                  <p className="text-lg font-black text-inherit">1 Expired Doc</p>
+                </div>
+              </div>
+
+              {/* Simulated Live Urgent Alert */}
+              <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left translate-z-20">
                 <div>
-                  <h3 className="font-bold text-inherit text-sm sm:text-base">
-                    Aarav Sharma's Financial Intelligence Dashboard
-                  </h3>
-                  <span className="text-xs opacity-70">
-                    2nd Year B.Com Hons • St. Xavier's Mumbai • General-EWS
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600 text-white pulse-radar">
+                      48h Remaining
+                    </span>
+                    <span className="text-xs font-bold text-inherit">Tata Trusts Individual Grants for Undergraduate Studies</span>
+                  </div>
+                  <p className="text-xs opacity-75 mt-1">
+                    Why you match: Academic requirement satisfied (86.4% vs 75%) • B.Com discipline aligned • State eligible.
+                  </p>
                 </div>
-              </div>
 
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 self-start sm:self-auto">
-                Profile Verification: 88%
-              </span>
-            </div>
-
-            {/* Metrics Ribbon */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-              <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Qualified</span>
-                <p className="text-lg font-black text-inherit">28 Opportunities</p>
+                <button
+                  onClick={onExploreDashboard}
+                  className="px-4 py-2 btn-animated-glow text-white rounded-lg text-xs font-bold self-start sm:self-auto shrink-0 shadow-xs cursor-pointer"
+                >
+                  Inspect Live Match
+                </button>
               </div>
-              <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Max Potential</span>
-                <p className="text-lg font-black text-inherit">₹3,75,000</p>
-              </div>
-              <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-500">Urgent Closes</span>
-                <p className="text-lg font-black text-inherit">1 in 48h</p>
-              </div>
-              <div className={`p-3 rounded-xl border ${currentTheme === 'midnight' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500">Action Needed</span>
-                <p className="text-lg font-black text-inherit">1 Expired Doc</p>
-              </div>
-            </div>
-
-            {/* Simulated Live Urgent Alert */}
-            <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600 text-white">
-                    48h Remaining
-                  </span>
-                  <span className="text-xs font-bold text-inherit">Tata Trusts Individual Grants for Undergraduate Studies</span>
-                </div>
-                <p className="text-xs opacity-75 mt-1">
-                  Why you match: Academic requirement satisfied (86.4% vs 75%) • B.Com discipline aligned • State eligible.
-                </p>
-              </div>
-
-              <button
-                onClick={onExploreDashboard}
-                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-lg text-xs font-bold self-start sm:self-auto shrink-0 shadow-xs"
-              >
-                Inspect Live Match
-              </button>
             </div>
           </div>
-        </div>
+        </Card3D>
       </section>
 
-      {/* 3 Core Differentiators Section */}
+      {/* 3 Core Differentiators Section in 3D */}
       <section className={`border-t py-16 backdrop-blur-xl transition-colors ${
         currentTheme === 'midnight'
           ? 'bg-slate-950/80 border-slate-800/80 text-slate-100'
@@ -264,7 +267,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-inherit">
+            <h2 className="text-2xl sm:text-3xl font-black text-inherit tracking-tight">
               Why Traditional Scholarship Portals Fail Students
             </h2>
             <p className="text-xs sm:text-sm opacity-70">
@@ -273,47 +276,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl transition-all ${
-              currentTheme === 'midnight'
-                ? 'bg-slate-900/70 border-slate-800 text-slate-200'
-                : 'bg-white/80 border-slate-200/80 text-slate-800'
-            }`}>
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-500 flex items-center justify-center">
-                <Sparkles className="w-5 h-5" />
+            <Card3D maxTilt={8} glare={true} liftOnHover={-8} depthZ={24} className="h-full">
+              <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl h-full preserve-3d ${
+                currentTheme === 'midnight'
+                  ? 'bg-slate-900/70 border-slate-800 text-slate-200'
+                  : 'bg-white/80 border-slate-200/80 text-slate-800'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-500 flex items-center justify-center translate-z-30 shadow-sm">
+                  <Sparkles className="w-6 h-6 animate-pulse" />
+                </div>
+                <h3 className="font-bold text-inherit text-base translate-z-20">5-Dimensional Explainable Scoring</h3>
+                <p className="text-xs opacity-75 leading-relaxed translate-z-10">
+                  No black-box percentages. We evaluate Academic Rigor, Degree Alignment, State Domicile, Financial Need, and Cohort Category with explicit mathematical weights.
+                </p>
               </div>
-              <h3 className="font-bold text-inherit text-base">5-Dimensional Explainable Scoring</h3>
-              <p className="text-xs opacity-75 leading-relaxed">
-                No black-box percentages. We evaluate Academic Rigor, Degree Alignment, State Domicile, Financial Need, and Cohort Category with explicit mathematical weights.
-              </p>
-            </div>
+            </Card3D>
 
-            <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl transition-all ${
-              currentTheme === 'midnight'
-                ? 'bg-slate-900/70 border-slate-800 text-slate-200'
-                : 'bg-white/80 border-slate-200/80 text-slate-800'
-            }`}>
-              <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-500 flex items-center justify-center">
-                <Lock className="w-5 h-5" />
+            <Card3D maxTilt={8} glare={true} liftOnHover={-8} depthZ={24} className="h-full">
+              <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl h-full preserve-3d ${
+                currentTheme === 'midnight'
+                  ? 'bg-slate-900/70 border-slate-800 text-slate-200'
+                  : 'bg-white/80 border-slate-200/80 text-slate-800'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-500 flex items-center justify-center translate-z-30 shadow-sm">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-inherit text-base translate-z-20">Non-Black-Box Exclusion Logic</h3>
+                <p className="text-xs opacity-75 leading-relaxed translate-z-10">
+                  Understand exactly why you are rejected with explicit disqualifiers. If an edge case exists, students can file a formal Manual Audit Request to an institutional officer.
+                </p>
               </div>
-              <h3 className="font-bold text-inherit text-base">Non-Black-Box Exclusion Logic</h3>
-              <p className="text-xs opacity-75 leading-relaxed">
-                Understand exactly why you are rejected with explicit disqualifiers. If an edge case exists, students can file a formal Manual Audit Request to an institutional officer.
-              </p>
-            </div>
+            </Card3D>
 
-            <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl transition-all ${
-              currentTheme === 'midnight'
-                ? 'bg-slate-900/70 border-slate-800 text-slate-200'
-                : 'bg-white/80 border-slate-200/80 text-slate-800'
-            }`}>
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
-                <Clock className="w-5 h-5" />
+            <Card3D maxTilt={8} glare={true} liftOnHover={-8} depthZ={24} className="h-full">
+              <div className={`p-6 rounded-2xl border space-y-3 backdrop-blur-xl h-full preserve-3d ${
+                currentTheme === 'midnight'
+                  ? 'bg-slate-900/70 border-slate-800 text-slate-200'
+                  : 'bg-white/80 border-slate-200/80 text-slate-800'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center translate-z-30 shadow-sm">
+                  <Clock className="w-6 h-6 animate-spin-slow" />
+                </div>
+                <h3 className="font-bold text-inherit text-base translate-z-20">Live Countdown & Pipeline Tracking</h3>
+                <p className="text-xs opacity-75 leading-relaxed translate-z-10">
+                  Real dynamic countdown clocks calculate hours, minutes, and seconds from official deadlines. Drag-and-drop your applications from Interested to Applied.
+                </p>
               </div>
-              <h3 className="font-bold text-inherit text-base">Live Countdown & Pipeline Tracking</h3>
-              <p className="text-xs opacity-75 leading-relaxed">
-                Real dynamic countdown clocks calculate hours, minutes, and seconds from official deadlines. Drag-and-drop your applications from Interested to Applied.
-              </p>
-            </div>
+            </Card3D>
           </div>
         </div>
       </section>
