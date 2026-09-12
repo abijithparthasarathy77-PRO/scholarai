@@ -64,9 +64,12 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn">
       {/* Student Banner Header */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
-        <div className="flex items-start sm:items-center space-x-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-500 text-white font-black text-xl flex items-center justify-center shadow-md shrink-0">
+      <div className="rounded-3xl border border-white/80 p-6 sm:p-7 shadow-xl backdrop-blur-2xl glass-panel flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden group">
+        {/* Subtle Ambient Shimmer Corner */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-indigo-500/10 via-sky-500/5 to-transparent pointer-events-none rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
+
+        <div className="flex items-start sm:items-center space-x-4 z-10">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-500 text-white font-black text-xl flex items-center justify-center shadow-lg shrink-0 group-hover:rotate-3 transition-transform">
             AS
           </div>
           <div>
@@ -74,10 +77,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
                 {student.name}
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/15 text-indigo-600 border border-indigo-500/25">
                 Sample Student Profile
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-500/10 text-inherit border border-inherit/20">
                 {student.category}
               </span>
             </div>
@@ -94,12 +97,12 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 self-start md:self-auto">
+        <div className="flex items-center space-x-3 self-start md:self-auto z-10">
           <button
             onClick={() => onNavigateTab('discover')}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center space-x-1.5"
+            className="px-5 py-3 btn-animated-glow text-white rounded-xl text-xs font-bold shadow-lg flex items-center space-x-2 cursor-pointer"
           >
-            <Compass className="w-4 h-4" />
+            <Compass className="w-4 h-4 animate-spin-slow" />
             <span>Discover All 28 Matches</span>
           </button>
         </div>
@@ -108,27 +111,27 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
       {/* TOP 4 KEY METRICS */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Qualified Opportunities */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xs transition-shadow">
+        <div className="scholar-card p-5 rounded-2xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Qualified Opportunities</span>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-              <Sparkles className="w-4 h-4" />
+            <div className="p-2 bg-indigo-500/15 text-indigo-600 rounded-xl">
+              <Sparkles className="w-4 h-4 animate-pulse" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">28</div>
+          <div className="text-2xl sm:text-3xl font-black text-inherit tracking-tight">28</div>
           <p className="text-[11px] text-indigo-600 font-semibold mt-1">Verified schemes matching criteria</p>
         </div>
 
         {/* Metric 2: Potential Funding */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xs transition-shadow">
+        <div className="scholar-card p-5 rounded-2xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Potential Funding</span>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+            <div className="p-2 bg-emerald-500/15 text-emerald-600 rounded-xl">
               <Coins className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-700 tracking-tight">₹4,85,000</div>
-          <p className="text-[10px] text-slate-500 mt-1 italic leading-tight">
+          <div className="text-2xl sm:text-3xl font-black text-emerald-600 tracking-tight">₹4,85,000</div>
+          <p className="text-[10px] opacity-60 mt-1 italic leading-tight">
             *Potential opportunity value, not guaranteed funds.
           </p>
         </div>

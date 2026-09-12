@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { UserRole } from '../types';
+import { UserRole, ThemeMode } from '../types';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { 
   Sparkles, 
   GraduationCap, 
@@ -20,12 +21,16 @@ interface LoginPageProps {
   onLoginSuccess: (role: UserRole, email: string) => void;
   onNavigateToLanding: () => void;
   onNavigateToRegister: () => void;
+  currentTheme: ThemeMode;
+  onSelectTheme: (theme: ThemeMode) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
   onLoginSuccess,
   onNavigateToLanding,
   onNavigateToRegister,
+  currentTheme,
+  onSelectTheme,
 }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('student');
   const [email, setEmail] = useState('aarav.sharma@xaviers.edu');
@@ -72,9 +77,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative selection:bg-indigo-600 selection:text-white overflow-hidden">
-      {/* Background glowing decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-indigo-500/10 via-sky-500/5 to-transparent pointer-events-none blur-3xl"></div>
+    <div className={`min-h-screen bg-transparent flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative selection:bg-indigo-600 selection:text-white overflow-hidden z-10 ${
+      currentTheme === 'midnight' ? 'text-slate-100' : 'text-slate-900'
+    }`}>
+      {/* Top Floating Controls */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeSwitcher 
+          currentTheme={currentTheme} 
+          onSelectTheme={onSelectTheme} 
+          compact 
+        />
+      </div>
 
       {/* Top Header Link */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10 space-y-3">
@@ -85,21 +98,29 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
             <Sparkles className="w-6 h-6" />
           </div>
-          <span className="text-2xl font-black tracking-tight text-slate-950 font-sans">
+          <span className={`text-2xl font-black tracking-tight font-sans ${
+            currentTheme === 'midnight' ? 'text-white' : 'text-slate-950'
+          }`}>
             SCHOLAR<span className="text-indigo-600">AI</span>
           </span>
         </button>
 
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+        <h2 className={`text-xl sm:text-2xl font-black tracking-tight ${
+          currentTheme === 'midnight' ? 'text-white' : 'text-slate-900'
+        }`}>
           Sign In to Your Account
         </h2>
-        <p className="text-xs text-slate-600">
+        <p className="text-xs opacity-70">
           Access AI eligibility evaluation, deadline alerts, and application management.
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4 sm:px-0">
-        <div className="bg-white py-8 px-5 sm:px-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+        <div className={`py-8 px-5 sm:px-8 rounded-3xl border shadow-2xl backdrop-blur-2xl space-y-6 ${
+          currentTheme === 'midnight'
+            ? 'bg-slate-950/80 border-slate-800 text-slate-100'
+            : 'bg-white/85 border-slate-200/90 text-slate-900'
+        }`}>
           {/* Role Switcher Tabs */}
           <div className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100 border border-slate-200 text-xs">
             <button

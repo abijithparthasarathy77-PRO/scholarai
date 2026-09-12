@@ -9,7 +9,8 @@ import {
   ManualReviewRequest, 
   EligibilityRule,
   MatchResult,
-  ApplicationStage
+  ApplicationStage,
+  ThemeMode
 } from './types';
 import { StorageService } from './services/storageService';
 import { evaluateScholarshipMatch } from './services/matchingEngine';
@@ -18,6 +19,7 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { AIChatDrawer } from './components/AIChatDrawer';
 import { ScholarshipDetailModal } from './components/ScholarshipDetailModal';
 import { ManualReviewModal } from './components/ManualReviewModal';
+import { AnimatedBackground } from './components/AnimatedBackground';
 import { LandingPage } from './views/LandingPage';
 import { LoginPage } from './views/LoginPage';
 import { OnboardingWizard } from './views/OnboardingWizard';
@@ -34,6 +36,7 @@ export const App: React.FC = () => {
   // Navigation & View State
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [currentRole, setCurrentRole] = useState<UserRole>('student');
+  const [currentTheme, setCurrentTheme] = useState<ThemeMode>(StorageService.getTheme());
   
   // Data States
   const [student, setStudent] = useState<StudentProfile>(StorageService.getStudentProfile());
@@ -165,10 +168,27 @@ export const App: React.FC = () => {
     showToast(`Manual review status updated to "${status}"`);
   };
 
+  const handleSelectTheme = (theme: ThemeMode) => {
+    setCurrentTheme(theme);
+    StorageService.setTheme(theme);
+    const themeNames: Record<ThemeMode, string> = {
+      aurora: 'Radiant Aurora',
+      midnight: 'Midnight Cyber',
+      sunset: 'Sunset Glow',
+      emerald: 'Emerald Oceanic',
+    };
+    showToast(`Background palette updated: ${themeNames[theme]}`);
+  };
+
   const currentUser = currentRole === 'admin' ? DEMO_USER_ADMIN : DEMO_USER_STUDENT;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-indigo-600 selection:text-white pb-16 md:pb-0">
+    <div className={`min-h-screen relative flex flex-col font-sans selection:bg-indigo-600 selection:text-white pb-16 md:pb-0 transition-colors duration-500 ${
+      currentTheme === 'midnight' ? 'text-slate-100 theme-dark-surface' : 'text-slate-900'
+    }`}>
+      {/* Dynamic Animated Ambient Background with floating orbs and particle drift */}
+      <AnimatedBackground theme={currentTheme} />
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-20 md:bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 text-xs font-semibold flex items-center space-x-2 animate-slideUp">
@@ -189,6 +209,8 @@ export const App: React.FC = () => {
           onMarkNotificationRead={handleMarkNotificationRead}
           onOpenAdvisor={() => setIsAdvisorOpen(true)}
           onResetDemo={handleResetDemo}
+          currentTheme={currentTheme}
+          onSelectTheme={handleSelectTheme}
           onSignOut={() => {
             setCurrentTab('login');
             showToast('Signed out of session');
@@ -197,7 +219,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Main View Switcher */}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         {currentTab === 'login' && (
           <LoginPage
             onLoginSuccess={(role) => {
@@ -212,6 +234,8 @@ export const App: React.FC = () => {
             }}
             onNavigateToLanding={() => setCurrentTab('landing')}
             onNavigateToRegister={() => setCurrentTab('onboarding')}
+            currentTheme={currentTheme}
+            onSelectTheme={handleSelectTheme}
           />
         )}
 
@@ -221,6 +245,8 @@ export const App: React.FC = () => {
             onExploreDashboard={() => setCurrentTab('dashboard')}
             onExploreCatalog={() => setCurrentTab('discover')}
             onNavigateToLogin={() => setCurrentTab('login')}
+            currentTheme={currentTheme}
+            onSelectTheme={handleSelectTheme}
           />
         )}
 

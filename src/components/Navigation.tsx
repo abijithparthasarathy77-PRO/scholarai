@@ -69,8 +69,9 @@ export const Navigation: React.FC<NavigationProps> = ({
       {/* Top Utility / Demo Notice Bar */}
       <div className="bg-slate-950/90 text-slate-300 text-[11px] px-4 py-1.5 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md">
         <div className="flex items-center space-x-2">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono font-semibold text-[10px] border border-indigo-500/30">
-            DEMO MODE
+          <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[10px] border border-indigo-500/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span>
+            <span>DEMO MODE</span>
           </span>
           <span className="hidden sm:inline text-slate-400">
             Pre-loaded student: <strong className="text-white">Aarav Sharma</strong> (2nd Year B.Com Hons, St. Xavier's Mumbai)
@@ -182,7 +183,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             {/* ScholarAI Advisor Button */}
             <button
               onClick={onOpenAdvisor}
-              className="hidden sm:inline-flex items-center space-x-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs hover:shadow-indigo-500/25 transition-all group"
+              className="hidden sm:inline-flex items-center space-x-1.5 btn-animated-glow text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all group cursor-pointer"
             >
               <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               <span>AI Advisor</span>
