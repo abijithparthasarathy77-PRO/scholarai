@@ -19,6 +19,7 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { AIChatDrawer } from './components/AIChatDrawer';
 import { ScholarshipDetailModal } from './components/ScholarshipDetailModal';
 import { ManualReviewModal } from './components/ManualReviewModal';
+import { CommandPalette } from './components/CommandPalette';
 import { AnimatedBackground } from './components/AnimatedBackground';
 import { LandingPage } from './views/LandingPage';
 import { LoginPage } from './views/LoginPage';
@@ -54,17 +55,46 @@ export const App: React.FC = () => {
   const [selectedScholarshipForDossier, setSelectedScholarshipForDossier] = useState<Scholarship | null>(null);
   const [selectedScholarshipForReview, setSelectedScholarshipForReview] = useState<Scholarship | null>(null);
   const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Initialize role
+  // Global Cmd+K / Ctrl+K listener for Command Palette
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Initialize role and default tab
   useEffect(() => {
     const savedRole = StorageService.getCurrentRole();
     setCurrentRole(savedRole);
+    if (savedRole === 'admin') {
+      setCurrentTab('admin');
+    }
   }, []);
+
+  // Strict role separation: ensure an admin NEVER sees student pages/dashboards
+  useEffect(() => {
+    if (currentRole === 'admin' && ['dashboard', 'discover', 'applications', 'calendar', 'profile'].includes(currentTab)) {
+      setCurrentTab('admin');
+    }
+  }, [currentRole, currentTab]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleSignOut = () => {
+    setLoginInitialRole('student');
+    setCurrentTab('login');
+    showToast('Signed out of session');
   };
 
   // Evaluate matches across all scholarships for the current student & documents
