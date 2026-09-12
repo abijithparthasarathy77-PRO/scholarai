@@ -173,85 +173,99 @@ export const ThreeDScene: React.FC<ThreeDSceneProps> = ({ theme }) => {
         }
       }
 
-      // 2. Render Left 3D Wireframe Icosahedron
-      const scale1 = Math.min(width, height) * 0.16;
-      const cx1 = width * 0.18;
-      const cy1 = height * 0.32;
+      // Safe content margin boundaries to strictly prevent ANY 3D wireframe from overlapping the text/letters
+      const centerContentWidth = Math.min(width * 0.88, 760);
+      const sideMargin = (width - centerContentWidth) / 2;
+      const rightMarginX = width - sideMargin;
 
-      const transformedVertices1 = baseIcosahedron.map(v => {
-        const scaled = { x: v.x * scale1, y: v.y * scale1, z: v.z * scale1 };
-        return rotatePoint(scaled, rotAngleX, rotAngleY, rotAngleZ);
-      });
+      // Only render 3D icosahedron (5D match machine) if we have sufficient side space outside the letters
+      const hasWideMargins = width >= 1180 && sideMargin >= 170;
 
-      const projectedVertices1 = transformedVertices1.map(v => project(v, 600, cx1, cy1));
+      // 2. 5D Match Machine (3D Wireframe Icosahedron) - Moved away from the letters to the safe Right Margin
+      if (hasWideMargins) {
+        // Positioned safely in the right margin, away from all letters and headlines
+        const cx1 = rightMarginX + sideMargin * 0.52;
+        const cy1 = Math.min(height * 0.32, 280);
+        const maxAllowedScale = Math.min(sideMargin * 0.32, 80);
+        const scale1 = maxAllowedScale;
 
-      // Draw Edges
-      ctx.save();
-      ctx.shadowColor = colors.primary;
-      ctx.shadowBlur = 12;
-      ctx.lineWidth = 1.6;
-      ctx.strokeStyle = colors.primary;
+        const transformedVertices1 = baseIcosahedron.map(v => {
+          const scaled = { x: v.x * scale1, y: v.y * scale1, z: v.z * scale1 };
+          return rotatePoint(scaled, rotAngleX, rotAngleY, rotAngleZ);
+        });
 
-      for (let [i, j] of icosahedronEdges) {
-        const p1 = projectedVertices1[i];
-        const p2 = projectedVertices1[j];
+        const projectedVertices1 = transformedVertices1.map(v => project(v, 600, cx1, cy1));
 
-        // Only draw if in front of camera
-        if (p1.scale > 0 && p2.scale > 0) {
+        // Draw Edges
+        ctx.save();
+        ctx.shadowColor = colors.primary;
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = colors.primary;
+
+        for (let [i, j] of icosahedronEdges) {
+          const p1 = projectedVertices1[i];
+          const p2 = projectedVertices1[j];
+
+          // Only draw if in front of camera
+          if (p1.scale > 0 && p2.scale > 0) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+
+        // Draw Glowing Vertex Joints
+        for (let p of projectedVertices1) {
+          if (p.scale > 0) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2.5 * p.scale, 0, Math.PI * 2);
+            ctx.fillStyle = colors.secondary;
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+
+      // 3. Render 3D Gyroscopic Orbital Rings - Positioned in the lower perimeter away from all text
+      if (width >= 1024) {
+        const cx2 = width * 0.88;
+        const cy2 = Math.max(height * 0.68, 520);
+        const ringRadius = Math.min(width * 0.1, 90);
+
+        ctx.save();
+        ctx.shadowColor = colors.secondary;
+        ctx.shadowBlur = 12;
+
+        const ringAngles = [
+          { ax: rotAngleX * 1.2, ay: rotAngleY * 0.8, color: colors.primary },
+          { ax: -rotAngleX * 0.9, ay: rotAngleY * 1.3, color: colors.secondary },
+          { ax: rotAngleX * 0.7, ay: -rotAngleY * 1.1, color: colors.glow },
+        ];
+
+        for (let ring of ringAngles) {
           ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
+          const segments = 36;
+          for (let k = 0; k <= segments; k++) {
+            const theta = (k / segments) * Math.PI * 2;
+            const p = {
+              x: Math.cos(theta) * ringRadius,
+              y: Math.sin(theta) * ringRadius,
+              z: 0,
+            };
+            const rotated = rotatePoint(p, ring.ax, ring.ay, rotAngleZ * 0.5);
+            const proj = project(rotated, 600, cx2, cy2);
+
+            if (k === 0) ctx.moveTo(proj.x, proj.y);
+            else ctx.lineTo(proj.x, proj.y);
+          }
+          ctx.strokeStyle = ring.color;
+          ctx.lineWidth = 1.4;
           ctx.stroke();
         }
+        ctx.restore();
       }
-
-      // Draw Glowing Vertex Joints
-      for (let p of projectedVertices1) {
-        if (p.scale > 0) {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 3 * p.scale, 0, Math.PI * 2);
-          ctx.fillStyle = colors.secondary;
-          ctx.fill();
-        }
-      }
-      ctx.restore();
-
-      // 3. Render Right 3D Gyroscopic Orbital Rings
-      const cx2 = width * 0.84;
-      const cy2 = height * 0.65;
-      const ringRadius = Math.min(width, height) * 0.18;
-
-      ctx.save();
-      ctx.shadowColor = colors.secondary;
-      ctx.shadowBlur = 15;
-
-      const ringAngles = [
-        { ax: rotAngleX * 1.2, ay: rotAngleY * 0.8, color: colors.primary },
-        { ax: -rotAngleX * 0.9, ay: rotAngleY * 1.3, color: colors.secondary },
-        { ax: rotAngleX * 0.7, ay: -rotAngleY * 1.1, color: colors.glow },
-      ];
-
-      for (let ring of ringAngles) {
-        ctx.beginPath();
-        const segments = 40;
-        for (let k = 0; k <= segments; k++) {
-          const theta = (k / segments) * Math.PI * 2;
-          const p = {
-            x: Math.cos(theta) * ringRadius,
-            y: Math.sin(theta) * ringRadius,
-            z: 0,
-          };
-          const rotated = rotatePoint(p, ring.ax, ring.ay, rotAngleZ * 0.5);
-          const proj = project(rotated, 600, cx2, cy2);
-
-          if (k === 0) ctx.moveTo(proj.x, proj.y);
-          else ctx.lineTo(proj.x, proj.y);
-        }
-        ctx.strokeStyle = ring.color;
-        ctx.lineWidth = 1.8;
-        ctx.stroke();
-      }
-      ctx.restore();
 
       animId = requestAnimationFrame(render);
     };
