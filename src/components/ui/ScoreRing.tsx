@@ -26,7 +26,8 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (safeScore / 100) * circumference;
 
-  const gradientId = `score-gradient-${variant}-${size}-${Math.random().toString(36).substring(2, 6)}`;
+  const uniqueId = React.useId();
+  const gradientId = `score-gradient-${variant}-${size}-${uniqueId.replace(/:/g, '')}`;
 
   return (
     <div className={`relative inline-flex flex-col items-center justify-center ${className}`}>

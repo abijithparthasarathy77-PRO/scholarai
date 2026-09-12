@@ -10,7 +10,6 @@ import {
   Compass,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
   Info,
   CheckCircle2
 } from 'lucide-react';

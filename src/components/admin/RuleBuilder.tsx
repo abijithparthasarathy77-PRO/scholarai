@@ -8,7 +8,6 @@ import {
   Play,
   CheckCircle2,
   XCircle,
-  Sparkles,
   Layers,
   Save
 } from 'lucide-react';

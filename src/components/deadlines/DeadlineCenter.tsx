@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { Scholarship } from '../../types';
-import { GlassCard } from '../ui/GlassCard';
-import { UrgencyBadge, PriorityBadge } from '../ui/Badge';
 import {
   Calendar as CalendarIcon,
   Clock,
-  AlertTriangle,
   ChevronLeft,
   ChevronRight,
-  IndianRupee,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2
+  IndianRupee
 } from 'lucide-react';
 
 interface DeadlineCenterProps {

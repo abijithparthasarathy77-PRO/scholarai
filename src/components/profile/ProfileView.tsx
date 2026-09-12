@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { StudentProfile } from '../../types';
 import { ScoreRing } from '../ui/ScoreRing';
 import {
-  User,
   GraduationCap,
   IndianRupee,
-  MapPin,
   Award,
   Save,
   CheckCircle2,

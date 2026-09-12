@@ -8,9 +8,7 @@ import {
   User,
   AlertTriangle,
   CheckCircle2,
-  ArrowRight,
-  HelpCircle,
-  RotateCcw
+  ArrowRight
 } from 'lucide-react';
 
 interface AIAdvisorViewProps {
@@ -204,13 +202,13 @@ export const AIAdvisorView: React.FC<AIAdvisorViewProps> = ({
 
     // 5. "Check my documents"
     if (q.includes('document') || q.includes('vault') || q.includes('cert')) {
-      const expired = documents.filter((d) => d.status === 'EXPIRED');
-      const missing = documents.filter((d) => d.status === 'MISSING');
+      const expiredDocs = documents.filter((d) => d.status === 'EXPIRED');
+      const missingDocs = documents.filter((d) => d.status === 'MISSING');
       return {
         id: `ai-${Date.now()}`,
         sender: 'scholar_ai',
         timestamp,
-        content: `Document Intelligence Vault Audit: You have **${documents.length} registered documents**. 4 are verified READY, 1 is EXPIRED, and 1 is MISSING.`,
+        content: `Document Intelligence Vault Audit: You have **${documents.length} registered documents**. 4 are verified READY, ${expiredDocs.length} is EXPIRED, and ${missingDocs.length} is MISSING.`,
         why: [
           `Expired: Annual Income Certificate (expired 31 Mar 2025).`,
           `Missing: Dean / HOD Academic Endorsement Letter.`,

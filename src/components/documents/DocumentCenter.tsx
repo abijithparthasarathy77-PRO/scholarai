@@ -3,15 +3,10 @@ import { StudentDocument } from '../../types';
 import { DocumentBadge } from '../ui/Badge';
 import {
   FileText,
-  Upload,
-  RefreshCw,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
   ShieldCheck,
   Info,
-  Sparkles,
-  Zap
+  Zap,
+  CheckCircle2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -27,7 +22,6 @@ export const DocumentCenter: React.FC<DocumentCenterProps> = ({
   onNavigateDashboard
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [activeUploadDoc, setActiveUploadDoc] = useState<StudentDocument | null>(null);
 
   const readyCount = documents.filter((d) => d.status === 'READY').length;
   const expiredCount = documents.filter((d) => d.status === 'EXPIRED').length;
