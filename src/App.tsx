@@ -31,12 +31,15 @@ import { ProfileView } from './views/ProfileView';
 import { AdminDashboardView } from './views/AdminDashboardView';
 import { DEMO_USER_STUDENT, DEMO_USER_ADMIN } from './data/mockData';
 import confetti from 'canvas-confetti';
+import { Shield, KeyRound, ArrowRight } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Navigation & View State
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [currentRole, setCurrentRole] = useState<UserRole>('student');
   const [currentTheme, setCurrentTheme] = useState<ThemeMode>(StorageService.getTheme());
+  const [loginInitialRole, setLoginInitialRole] = useState<UserRole>('student');
+  const [adminSubTab, setAdminSubTab] = useState<'overview' | 'scholarships' | 'rules' | 'reviews'>('overview');
   
   // Data States
   const [student, setStudent] = useState<StudentProfile>(StorageService.getStudentProfile());
@@ -236,6 +239,7 @@ export const App: React.FC = () => {
             onNavigateToRegister={() => setCurrentTab('onboarding')}
             currentTheme={currentTheme}
             onSelectTheme={handleSelectTheme}
+            initialRole={loginInitialRole}
           />
         )}
 
@@ -319,32 +323,104 @@ export const App: React.FC = () => {
         )}
 
         {currentTab === 'admin' && (
-          <AdminDashboardView
-            adminUser={DEMO_USER_ADMIN}
-            scholarships={scholarships}
-            manualReviews={manualReviews}
-            rules={rules}
-            onSaveRule={handleSaveRule}
-            onUpdateScholarship={handleUpdateScholarship}
-            onUpdateManualReview={handleUpdateManualReview}
-            onSwitchToStudentView={() => handleToggleRole('student')}
-          />
+          currentRole === 'admin' ? (
+            <AdminDashboardView
+              adminUser={DEMO_USER_ADMIN}
+              scholarships={scholarships}
+              manualReviews={manualReviews}
+              rules={rules}
+              onSaveRule={handleSaveRule}
+              onUpdateScholarship={handleUpdateScholarship}
+              onUpdateManualReview={handleUpdateManualReview}
+              activeSubTab={adminSubTab}
+              onSelectSubTab={setAdminSubTab}
+              onSignOut={handleSignOut}
+              onNavigateHome={() => setCurrentTab('landing')}
+              currentTheme={currentTheme}
+              onSelectTheme={handleSelectTheme}
+            />
+          ) : (
+            <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6 animate-fadeIn">
+              <div className="w-20 h-20 mx-auto rounded-3xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-500 shadow-2xl backdrop-blur-xl">
+                <Shield className="w-10 h-10" />
+              </div>
+              <div className="space-y-2">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25">
+                  Restricted Institutional Portal
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+                  Institutional Admin Sign-In Required
+                </h2>
+                <p className="text-xs sm:text-sm opacity-70 max-w-md mx-auto leading-relaxed">
+                  The Institutional Admin Suite is strictly reserved for verified university administrators, nodal scrutiny officers, and scholarship evaluators. Student accounts do not have access to institutional settings or audit queues.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setLoginInitialRole('admin');
+                    setCurrentTab('login');
+                  }}
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-lg flex items-center justify-center space-x-2 transition-all cursor-pointer hover:scale-105"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  <span>Sign In as Institutional Admin</span>
+                </button>
+                <button
+                  onClick={() => setCurrentTab('dashboard')}
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl border border-inherit/20 hover:bg-slate-500/10 font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Return to Student Dashboard
+                </button>
+              </div>
+            </div>
+          )
         )}
       </main>
 
-      {/* Embedded ScholarAI Advisor Drawer */}
-      <AIChatDrawer
-        isOpen={isAdvisorOpen}
-        onClose={() => setIsAdvisorOpen(false)}
-        student={student}
+      {/* Embedded ScholarAI Advisor Drawer - Student Only */}
+      {currentRole === 'student' && (
+        <AIChatDrawer
+          isOpen={isAdvisorOpen}
+          onClose={() => setIsAdvisorOpen(false)}
+          student={student}
+          scholarships={scholarships}
+          applications={applications}
+          documents={documents}
+          matches={matchResults}
+          onNavigate={url => {
+            const tab = url.replace('/', '').split('?')[0];
+            if (tab) setCurrentTab(tab);
+          }}
+        />
+      )}
+
+      {/* Global Command Palette Search Modal */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
         scholarships={scholarships}
-        applications={applications}
-        documents={documents}
-        matches={matchResults}
-        onNavigate={url => {
-          const tab = url.replace('/', '').split('?')[0];
-          if (tab) setCurrentTab(tab);
+        onSelectScholarship={(s) => {
+          setSelectedScholarshipForDossier(s);
+          setIsCommandPaletteOpen(false);
         }}
+        onNavigateTab={(tab) => {
+          setCurrentTab(tab);
+          setIsCommandPaletteOpen(false);
+        }}
+        onOpenAdvisor={() => {
+          setIsAdvisorOpen(true);
+          setIsCommandPaletteOpen(false);
+        }}
+        onToggleRole={handleToggleRole}
+        currentRole={currentRole}
+        onResetDemo={handleResetDemo}
+        onSelectTheme={handleSelectTheme}
+        currentTheme={currentTheme}
+        adminSubTab={adminSubTab}
+        onSelectAdminSubTab={setAdminSubTab}
+        onSignOut={handleSignOut}
       />
 
       {/* Scholarship Detail Dossier Modal */}

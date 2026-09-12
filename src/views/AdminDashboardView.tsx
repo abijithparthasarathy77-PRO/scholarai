@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Scholarship, ManualReviewRequest, EligibilityRule, User } from '../types';
+import { Scholarship, ManualReviewRequest, EligibilityRule, User, ThemeMode } from '../types';
 import { RuleBuilder } from '../components/RuleBuilder';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { 
   Shield, 
   BookOpen, 
@@ -17,7 +18,9 @@ import {
   ExternalLink,
   Edit,
   Save,
-  X
+  X,
+  LogOut,
+  Sparkles
 } from 'lucide-react';
 
 interface AdminDashboardViewProps {
@@ -28,7 +31,12 @@ interface AdminDashboardViewProps {
   onSaveRule: (rule: EligibilityRule) => void;
   onUpdateScholarship: (scholarship: Scholarship) => void;
   onUpdateManualReview: (reviewId: string, status: ManualReviewRequest['status'], notes?: string) => void;
-  onSwitchToStudentView: () => void;
+  activeSubTab?: 'overview' | 'scholarships' | 'rules' | 'reviews';
+  onSelectSubTab?: (tab: 'overview' | 'scholarships' | 'rules' | 'reviews') => void;
+  onSignOut: () => void;
+  onNavigateHome?: () => void;
+  currentTheme: ThemeMode;
+  onSelectTheme: (theme: ThemeMode) => void;
 }
 
 export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
@@ -39,9 +47,22 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   onSaveRule,
   onUpdateScholarship,
   onUpdateManualReview,
-  onSwitchToStudentView,
+  activeSubTab = 'overview',
+  onSelectSubTab,
+  onSignOut,
+  onNavigateHome,
+  currentTheme,
+  onSelectTheme,
 }) => {
-  const [subTab, setSubTab] = useState<'overview' | 'scholarships' | 'rules' | 'reviews'>('overview');
+  const [internalSubTab, setInternalSubTab] = useState<'overview' | 'scholarships' | 'rules' | 'reviews'>('overview');
+  const subTab = activeSubTab || internalSubTab;
+  const setSubTab = (tab: 'overview' | 'scholarships' | 'rules' | 'reviews') => {
+    if (onSelectSubTab) {
+      onSelectSubTab(tab);
+    } else {
+      setInternalSubTab(tab);
+    }
+  };
   const [editingScholarship, setEditingScholarship] = useState<Scholarship | null>(null);
   const [reviewModalData, setReviewModalData] = useState<{ id: string; status: ManualReviewRequest['status']; notes: string } | null>(null);
   const [searchScholarship, setSearchScholarship] = useState('');
@@ -72,86 +93,223 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn">
-      {/* Admin Header Banner */}
-      <div className="bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-7 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-fadeIn">
+      {/* Institutional Authority Box */}
+      <div className="bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-purple-500/20 flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div className="flex items-center space-x-4">
-          <div className="w-14 h-14 rounded-2xl bg-purple-600/80 border border-purple-400/40 text-white flex items-center justify-center shadow-md shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-purple-600/80 border border-purple-400/40 text-white flex items-center justify-center shadow-lg shrink-0">
             <Shield className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-400 text-purple-950">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-400 text-purple-950">
                 Institutional Authority
               </span>
               <span className="text-xs text-purple-200">ScholarAI Administration Suite</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black mt-0.5">
+            <h1 className="text-xl sm:text-2xl font-black mt-0.5 tracking-tight">
               {adminUser.name}
             </h1>
-            <p className="text-xs text-purple-200/80">
+            <p className="text-xs text-purple-200/80 font-medium">
               Chief Scholarship Evaluator & Nodal Scrutiny Officer
             </p>
           </div>
         </div>
 
-        <button
-          onClick={onSwitchToStudentView}
-          className="px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl text-xs font-bold transition-colors self-start md:self-auto"
-        >
-          Switch to Aarav Sharma (Student View)
-        </button>
+        {/* Top Controls inside the Institutional Authority Box */}
+        <div className="flex items-center space-x-3 self-start md:self-auto flex-wrap gap-y-2">
+          <ThemeSwitcher 
+            currentTheme={currentTheme} 
+            onSelectTheme={onSelectTheme} 
+            compact 
+          />
+
+          {onNavigateHome && (
+            <button
+              onClick={onNavigateHome}
+              className="px-3.5 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
+              title="View Public Portal Homepage"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Public Home</span>
+            </button>
+          )}
+
+          <button
+            onClick={onSignOut}
+            className="px-4 py-2 bg-rose-600/80 hover:bg-rose-600 border border-rose-400/40 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm"
+            title="Sign Out of Administrator Account"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
-      {/* Admin Sub-navigation Tabs */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 pb-3 overflow-x-auto">
+      {/* CURVED BOXES TOPIC NAVIGATION (Directly under the Institutional Authority Box) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* Topic 1: Overview Curved Box */}
         <button
           onClick={() => setSubTab('overview')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`p-4 rounded-3xl border transition-all duration-300 text-left flex items-start space-x-3.5 cursor-pointer group hover:scale-[1.02] active:scale-[0.98] ${
             subTab === 'overview'
-              ? 'bg-purple-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400 shadow-xl shadow-purple-600/30 ring-2 ring-purple-400/60'
+              : 'bg-white/85 dark:bg-slate-900/85 text-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-800 hover:border-purple-300 hover:bg-purple-50/40 dark:hover:bg-slate-800/80 shadow-xs'
           }`}
         >
-          Dashboard Overview
+          <div className={`p-3 rounded-2xl shrink-0 transition-colors ${
+            subTab === 'overview'
+              ? 'bg-white/20 text-white shadow-xs'
+              : 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white'
+          }`}>
+            <Shield className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between">
+              <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                subTab === 'overview' ? 'text-purple-200' : 'text-purple-600 dark:text-purple-400'
+              }`}>
+                Topic 01
+              </span>
+              {subTab === 'overview' && (
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+              )}
+            </div>
+            <h4 className="font-extrabold text-sm sm:text-base mt-0.5 truncate">
+              Dashboard Overview
+            </h4>
+            <p className={`text-[11px] mt-0.5 line-clamp-1 ${
+              subTab === 'overview' ? 'text-purple-100/80' : 'opacity-60'
+            }`}>
+              Key Metrics & Duty Bar
+            </p>
+          </div>
         </button>
 
+        {/* Topic 2: Scholarship Catalog Curved Box */}
         <button
           onClick={() => setSubTab('scholarships')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+          className={`p-4 rounded-3xl border transition-all duration-300 text-left flex items-start space-x-3.5 cursor-pointer group hover:scale-[1.02] active:scale-[0.98] ${
             subTab === 'scholarships'
-              ? 'bg-purple-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400 shadow-xl shadow-purple-600/30 ring-2 ring-purple-400/60'
+              : 'bg-white/85 dark:bg-slate-900/85 text-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-800 hover:border-purple-300 hover:bg-purple-50/40 dark:hover:bg-slate-800/80 shadow-xs'
           }`}
         >
-          <span>Scholarship Catalog ({scholarships.length})</span>
+          <div className={`p-3 rounded-2xl shrink-0 transition-colors ${
+            subTab === 'scholarships'
+              ? 'bg-white/20 text-white shadow-xs'
+              : 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white'
+          }`}>
+            <BookOpen className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between">
+              <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                subTab === 'scholarships' ? 'text-purple-200' : 'text-purple-600 dark:text-purple-400'
+              }`}>
+                Topic 02
+              </span>
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                subTab === 'scholarships' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+              }`}>
+                {scholarships.length} Schemes
+              </span>
+            </div>
+            <h4 className="font-extrabold text-sm sm:text-base mt-0.5 truncate">
+              Scholarship Catalog
+            </h4>
+            <p className={`text-[11px] mt-0.5 line-clamp-1 ${
+              subTab === 'scholarships' ? 'text-purple-100/80' : 'opacity-60'
+            }`}>
+              Registry & Verification Audit
+            </p>
+          </div>
         </button>
 
+        {/* Topic 3: Rule Builder Curved Box */}
         <button
           onClick={() => setSubTab('rules')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+          className={`p-4 rounded-3xl border transition-all duration-300 text-left flex items-start space-x-3.5 cursor-pointer group hover:scale-[1.02] active:scale-[0.98] ${
             subTab === 'rules'
-              ? 'bg-purple-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400 shadow-xl shadow-purple-600/30 ring-2 ring-purple-400/60'
+              : 'bg-white/85 dark:bg-slate-900/85 text-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-800 hover:border-purple-300 hover:bg-purple-50/40 dark:hover:bg-slate-800/80 shadow-xs'
           }`}
         >
-          <Sliders className="w-3.5 h-3.5" />
-          <span>Eligibility Rule Builder</span>
+          <div className={`p-3 rounded-2xl shrink-0 transition-colors ${
+            subTab === 'rules'
+              ? 'bg-white/20 text-white shadow-xs'
+              : 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white'
+          }`}>
+            <Sliders className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between">
+              <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                subTab === 'rules' ? 'text-purple-200' : 'text-purple-600 dark:text-purple-400'
+              }`}>
+                Topic 03
+              </span>
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                subTab === 'rules' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+              }`}>
+                {rules.length} Rules
+              </span>
+            </div>
+            <h4 className="font-extrabold text-sm sm:text-base mt-0.5 truncate">
+              Rule Builder
+            </h4>
+            <p className={`text-[11px] mt-0.5 line-clamp-1 ${
+              subTab === 'rules' ? 'text-purple-100/80' : 'opacity-60'
+            }`}>
+              AST Visual Logic & Conditions
+            </p>
+          </div>
         </button>
 
+        {/* Topic 4: Manual Appeals Queue Curved Box */}
         <button
           onClick={() => setSubTab('reviews')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 relative ${
+          className={`p-4 rounded-3xl border transition-all duration-300 text-left flex items-start space-x-3.5 cursor-pointer group hover:scale-[1.02] active:scale-[0.98] ${
             subTab === 'reviews'
-              ? 'bg-purple-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400 shadow-xl shadow-purple-600/30 ring-2 ring-purple-400/60'
+              : 'bg-white/85 dark:bg-slate-900/85 text-slate-800 dark:text-slate-200 border-slate-200/90 dark:border-slate-800 hover:border-purple-300 hover:bg-purple-50/40 dark:hover:bg-slate-800/80 shadow-xs'
           }`}
         >
-          <FileQuestion className="w-3.5 h-3.5" />
-          <span>Manual Reviews / Appeals</span>
-          {pendingReviewsCount > 0 && (
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping ml-1"></span>
-          )}
+          <div className={`p-3 rounded-2xl shrink-0 transition-colors ${
+            subTab === 'reviews'
+              ? 'bg-white/20 text-white shadow-xs'
+              : 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white'
+          }`}>
+            <FileQuestion className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between">
+              <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                subTab === 'reviews' ? 'text-purple-200' : 'text-purple-600 dark:text-purple-400'
+              }`}>
+                Topic 04
+              </span>
+              {pendingReviewsCount > 0 ? (
+                <span className="flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white animate-pulse">
+                  <span>{pendingReviewsCount} Pending</span>
+                </span>
+              ) : (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                  subTab === 'reviews' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                }`}>
+                  0 Pending
+                </span>
+              )}
+            </div>
+            <h4 className="font-extrabold text-sm sm:text-base mt-0.5 truncate">
+              Manual Reviews
+            </h4>
+            <p className={`text-[11px] mt-0.5 line-clamp-1 ${
+              subTab === 'reviews' ? 'text-purple-100/80' : 'opacity-60'
+            }`}>
+              Student Appeals & Adjudication
+            </p>
+          </div>
         </button>
       </div>
 

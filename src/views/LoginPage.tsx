@@ -23,6 +23,7 @@ interface LoginPageProps {
   onNavigateToRegister: () => void;
   currentTheme: ThemeMode;
   onSelectTheme: (theme: ThemeMode) => void;
+  initialRole?: UserRole;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
@@ -31,10 +32,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onNavigateToRegister,
   currentTheme,
   onSelectTheme,
+  initialRole = 'student',
 }) => {
-  const [selectedRole, setSelectedRole] = useState<UserRole>('student');
-  const [email, setEmail] = useState('aarav.sharma@xaviers.edu');
-  const [password, setPassword] = useState('••••••••••••');
+  const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
+  const [email, setEmail] = useState(initialRole === 'admin' ? 'admin.review@scholarai.edu.in' : 'aarav.sharma@xaviers.edu');
+  const [password, setPassword] = useState(initialRole === 'admin' ? 'adminPass@2026' : '••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
